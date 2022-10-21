@@ -2,6 +2,14 @@
 {% block body %}
     {% load static %}
     {% if user.is_authenticated %}
+
+        <style>
+            tr:hover{
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        </style>
+        
         <div class="page-content">
             <div class="card radius-15">
                 <div class="card-body">
@@ -46,37 +54,18 @@
                                 <th>GST TYPE</th>
                                 <th>GSTIN</th>
                                 <th>PAN NO</th>
-                                <th>ACTION</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for v in vndr %}
-                            <tr>
-                                <td><a href="vendorprofile/{{ v.vendorid }}" title="Profile">{{ v.firstname }} {{ v.lastname }}</a></td>
+                            <tr onclick="window.location='vendorprofile/{{ v.vendorid }}';">
+                                <td>{{ v.firstname }} {{ v.lastname }}</td>
                                 <td>{{ v.companyname }}</td>
                                 <td>{{ v.email }}</td>
                                 <td>{{ v.mobile }}</td>
                                 <td>{{ v.gsttype }}</td>
                                 <td>{{ v.gstin }}</td>
                                 <td>{{ v.panno }}</td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
-                                            data-toggle="dropdown">Actions
-                                        </button>
-                                        <div class="dropdown-menu" style="background-color: #fff;">
-                                            <a href="goeditvendor/{{ v.vendorid }}" class="dropdown-item"
-                                                style="color: #000; font-size: 15px;"><i class="bx bx-edit"><b>EDIT</b></i>
-                                            </a>
-                                            <a href="deletevendor/{{ v.vendorid }}" class="dropdown-item"
-                                               style="color: #000; font-size: 15px;"><i class="bx bx-trash"><b>DELETE</b></i>
-                                            </a>
-                                            <a href="vendorprofile/{{ v.vendorid }}" class="dropdown-item"
-                                               style="color: #000; font-size: 15px;"><i class="bx bxs-eyedropper"><b>VIEW</b></i>
-                                            </a>
-                                        </div>
-                                    </div>   
-                                </td>
                             </tr>
                             {% endfor %}
                             </tbody>

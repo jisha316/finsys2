@@ -417,6 +417,8 @@ urlpatterns = [
     re_path(r'^viewpurchasepymnt/deletepurchasepymnt/(?P<id>\d+)$', views.deletepurchasepymnt, name='deletepurchasepymnt'),
 
     re_path(r'^payment_method$', views.payment_method, name='payment_method'),
+    re_path(r'^search_resept1/(?P<id>\d+)$', views.search_resept1, name='search_resept1'),
+    re_path(r'^vendorprofile/searchdate$', views.searchdate, name='searchdate'),
     
 
 ]

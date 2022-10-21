@@ -94,7 +94,7 @@
             display: inline-block;
             padding: 0 10px;
             line-height: 37px;
-            float: right;
+            /* float: right; */
             position: relative;
         }
         .widget-body {
@@ -103,17 +103,48 @@
         .widget-main {
             padding: 12px
         }
+        .ed:hover{
+            background-color: rgba(255, 255, 255,0.2);
+        }
+        .tr:hover{
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .head:hover{
+            background-color: rgba(255, 255, 255,0.2);
+        }
+        .new{
+            color: #fff;
+        }
+        .new:hover{
+            color: rgba(255, 255, 255,0.4);
+        }
     </style>
 
     <div class="page-content">
         <div class="card radius-15">
             <div class="card-body">
-                <div class="btn-group" style="float: left; ">
-                    <a style="padding: 10px; cursor: pointer;" onclick="Details()" >Details</a>
-                    <a style="padding: 10px; cursor: pointer;" onclick="Overview()"> Overview</a>
-                    <a style="padding: 10px; cursor: pointer;" onclick="transaction()"> Transactions</a>
-                    <a style="padding: 10px; cursor: pointer;" onclick="Statment()"> Statment</a>
-                </div> 
+                <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgba(0,0,0,.01);">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link btn head" role="button" onclick="Details()"><i class="fa fa-info-circle">&nbsp;Details</i><span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" onclick="Overview()"><i class="fa fa-list-alt">&nbsp;Overview</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" onclick="transaction()"><i class="fa fa-stack-exchange">&nbsp;Transactions</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" onclick="Statment()"><i class="fa fa-tasks">&nbsp;Statment</i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
             </div>
         </div>
         <div class="card card-registration card-registration-2" style="border-radius: 15px;">
@@ -243,12 +274,13 @@
                             <div class="p-5">
                                 <div class="row">
                                     <div class="col-md-4"></div>
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-1"><a href="{% url 'goeditvendor' vndr.vendorid %}" role="button" title="Edit">
-                                        <h5><i class="fa fa-edit"></i></h5></a>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2"><a class="ed" href="{% url 'goeditvendor' vndr.vendorid %}" role="button">
+                                        <h6><i class="fa fa-edit">&nbsp;Edit</i></h6></a>
                                     </div>
-                                    <div class="col-md-2"><a href="{% url 'deletevendor' vndr.vendorid %}" role="button" title="Delete">
-                                        <h5><i class="fa fa-trash"></i></h5></a>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-2"><a href="{% url 'deletevendor' vndr.vendorid %}" role="button">
+                                        <h6><i class="fa fa-trash">&nbsp;Delete</i></h6></a>
                                     </div>
                                 </div> 
                                 <h3 class="fw-bold mb-5 mt-2 pt-1">GST</h3>
@@ -316,41 +348,52 @@
                     <div class="container-fluid" >
                         <div class="py-5">
                             <div class="container">
-                                <div>
-                                    <form id="form_post" >
-                                        <div class="row">
-                                            <div class="col-md-0 mt-1">
-                                                <label>From &nbsp;&nbsp; </label>
+                                <form action="searchdate" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                                list="hosting-plan" name="reportperiod" type="text">
+                                                <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                                <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                                <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                                                <option><span class="bx bx-right-arrow-alt"></span>This month</option>
+                                                <option><span class="bx bx-right-arrow-alt"></span>This financial year</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-1"></div>
+                                        <div class="col-sm-6">
+                                            <div class="row" id="fldate" style="display: none;">
+                                                <div class="col-md-0 mt-1">
+                                                    <label>From &nbsp;&nbsp; </label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="date" id="fdate" name="fper" class="form-control"> 
+                                                </div>
+                                                <div class="col-md-0 mt-1">
+                                                    <label>To </label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="date" id="ldate" name="tper" class="form-control">
+                                                </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <input type="date" id="fdate" name="fdate" class="form-control"> 
-                                            </div>
-                                            <div class="col-md-0 mt-1">
-                                                <label>To </label>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <input type="date" id="ldate" name="ldate" class="form-control">
-                                            </div>
-                                            <div class="col-md-0">
-                                                <button class="btn btn-outline-info text-grey mb-3" type="submit"> Search</button>
-                                            </div>
-                                            <div class="col-md-5"></div>
-                                            <div class="col-md-0">
-                                                <a class="fa fa-print" style="padding: 10px; cursor: pointer;"  href="javascript:generatePDF()" id="downloadButton" > PDF</a>
-                                            </div>
-                                        </div><hr>
-                                    </form>
-                                    
-                                </div>
+                                        </div>
+                                        <button type="submit">fhfhfdh</button>
+                                        <div class="btn-group col-md-2">
+                                           
+                                            <a class="btn" role="button" style="border: 1px solid #fff;" onclick="printDiv()"><i class="fa fa-print">&nbsp;&nbsp;Print</i></a>
+                                        </div>    
+                                    </div><hr>
+                                </form>
                             </div>
                             
                             <div class="row hidden-md-up" style="margin-top: 15px;">
                                 <div class="col-md-7" style="margin: auto;">
                                   <div class="card">
-                                    <div id="whatToPrint">
+                                    <div id="panel">
                                         <div class="card-block">
                                             <div class="card-body">
-                                                <div class="container bootdey"  >
+                                                <div class="container bootdey">
                                                     <div class="row">
                                                         <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
                                                             <div class="widget-box">
@@ -404,7 +447,7 @@
                                                                                         </tr>
                                                                                     {% endif %}
                                                                                     <tr>
-                                                                                        <td>Invoiced Amount</td>
+                                                                                        <td>Billed Amount</td>
                                                                                         <td>  <input type="text" id="invamount" value="{{billed}}" style="border: none;"></td>
                                                                                     </tr>
                                                                                     <tr style="border-bottom: 1px solid black; width:100%;">
@@ -434,26 +477,26 @@
                                                                             <tbody>
                                                                                 {% for i in statment %}
                                                                                     <tr>
-                                                                                        <td>{{i.Date | date:'d-m-Y'}}</td>
-                                                                                        <td>{{i.Transactions}}</td>
-                                                                                        <td>{% if i.inv != null  %}
-                                                                                            INV-{{i.inv.invoiceno}} due on {{i.inv.duedate}}
+                                                                                        <td>{{i.date | date:'d-m-Y'}}</td>
+                                                                                        <td>{{i.transactions}}</td>
+                                                                                        <td>{% if i.pbill != null  %}
+                                                                                            INV-{{i.pbill.bill_no}} due on {{i.pbill.due_date}}
                                                                                             {% endif %} 
-                                                                                            {% if i.pay != null  %}
-                                                                                            ₹{{i.Payments}} 
+                                                                                            {% if i.pymnt != null  %}
+                                                                                            ₹{{i.payments}} 
                                                                                             {% endif %} 
                                                                                         </td>
                                                                                         <td>
-                                                                                            {% if i.Amount %}
-                                                                                            {{i.Amount}}
+                                                                                            {% if i.amount %}
+                                                                                            {{i.amount}}
                                                                                             {% endif %}
                                                                                         </td>
-                                                                                        <td>{% if i.Payments %}
-                                                                                            {{i.Payments}}
+                                                                                        <td>{% if i.payments %}
+                                                                                            {{i.payments}}
                                                                                             {% endif %}
                                                                                             </td>
-                                                                                        <td>{% if i.Balance %}
-                                                                                            {{i.Balance}}
+                                                                                        <td>{% if i.balance %}
+                                                                                            {{i.balance}}
                                                                                             {% endif %} 
                                                                                         </td>
                                                                                     </tr>
@@ -500,11 +543,11 @@
 
             <div id="transation" style="display: none;" >
                 <div style=" margin-top: 20px;">
-                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dispinv()" >Bill</a>
-                    <a href="{% url 'goaddinvoices' %}" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a>   
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="dispinv()">Bill</a>
+                    <a href="{% url 'addbilling' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a>   
                 </div> 
                 <div id="invtable" style="display:none;">
-                    <table class="table table-responsive-md mt-3 table-hover" >
+                    <table class="table table-responsive-md mt-3">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">BILL DATE</th>
@@ -518,7 +561,7 @@
                         </thead>
                         <tbody>
                             {% for p in pbl %}
-                                <tr tr class="table-row " data-href="{% url 'viewbill' p.billid %}">
+                                 <tr class="table-row tr" onclick=window.location='{% url "viewbill" p.billid %}';>
                                     <td style="text-align: center;">{{ p.date }}</td>
                                     <th style="text-align: center;">{{ p.bill_no }}</th>
                                     <td style="text-align: center;">{{ p.reference }}</td>
@@ -532,11 +575,11 @@
                     </table>
                 </div><br>
                 <div style=" margin-top: 20px;">
-                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dispay()" >Payment</a>
-                    <a href="" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a>    
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="dispay()" >Payment</a>
+                    <a href="{% url 'addpurchasepymnt' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a>    
                 </div> 
                 <div id="paytable" style="display:none;">
-                    <table class="table table-responsive-md mt-4 table-hover">
+                    <table class="table table-responsive-md mt-4">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Date</th>
@@ -548,7 +591,7 @@
                         </thead>
                         <tbody>
                             {% for i in paymnt %}
-                            <tr  class="table-row " data-href="{% url 'viewpurchasepymnt' i.pymntid %}" >
+                            <tr class="table-row tr" onclick=window.location="{% url 'viewpurchasepymnt' i.pymntid %}">
                                 <th style="text-align: center;">{{ i.paymentdate  | date:'d-m-Y' }}</th>
                                 <td style="text-align: center;">{{ i.reference }}</td>
                                 <td style="text-align: center;"> {{ i.paymentmethod }}</td>
@@ -560,11 +603,11 @@
                     </table>
                 </div><br>
                 <div style=" margin-top: 20px;">
-                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="disest()" >Expenses</a>
-                    <a href="" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a> 
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="disest()" >Expenses</a>
+                    <a href="{% url 'addexpenses' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a> 
                 </div> 
                 <div id="esttable" style="display:none;">
-                    <table class="table table-responsive-md mt-4 table-hover">
+                    <table class="table table-responsive-md mt-4">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Date</th>
@@ -576,7 +619,7 @@
                         </thead>
                         <tbody>
                             {% for e in expnc %}
-                            <tr  class="table-row " data-href="{% url 'viewexpense' e.expenseid %}" >
+                            <tr class="table-row tr" onclick=window.location="{% url 'viewexpense' e.expenseid %}">
                                 <th style="text-align: center;">{{ e.date | date:'d-m-Y' }}</th>
                                 <td style="text-align: center;">{{ e.expense_no }}</td>
                                 <td style="text-align: center;"> {{ e.reference }}</td>
@@ -588,11 +631,11 @@
                     </table>
                 </div><br>
                 <div style=" margin-top: 20px;">
-                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dissale()" >Purchase Order</a>
-                    <a href="" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a>   
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="dissale()" >Purchase Order</a>
+                    <a href="{% url 'addpurchaseorder' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a>   
                 </div> 
                 <div id="saletable" style="display:none;">
-                    <table class="table table-responsive-md mt-4 table-hover">
+                    <table class="table table-responsive-md mt-4">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Date</th>
@@ -606,7 +649,7 @@
                         </thead>
                         <tbody>
                             {% for po in pordr %}
-                                <tr tr class="table-row " data-href="{% url 'viewpurchaseorder' po.porderid %}">
+                                <tr tr class="table-row tr" onclick=window.location="{% url 'viewpurchaseorder' po.porderid %}">
                                     <th style="text-align: center;">{{ po.date | date:'d-m-Y' }}</th>
                                     <td style="text-align: center;">{{ po.puchaseorder_no }}</td>
                                     <td style="text-align: center;"> {{ po.reference }}</td>
@@ -621,6 +664,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('fldate').style.display = 'flex';
+                // document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('fldate').style.display = 'none';
+                // document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+
+    <script> 
+        function printDiv() { 
+            var divContents = document.getElementById("panel").innerHTML; 
+            var a = window.open('', '', 'height=800, width=800'); 
+            a.document.write('<html>'); 
+            a.document.write('<body > <h1> <br>'); 
+            a.document.write(divContents); 
+            a.document.write('</body></html>'); 
+            a.document.close(); 
+            a.print(); 
+        } 
+    </script>
     
     <script>
         function Overview() {    
@@ -663,84 +731,12 @@
             document.getElementById('saletable').style.display = 'block';
         }
     </script>
-    <script>
-        const tbl1 = document.querySelector('#logic');
-        const tbl2 = document.querySelector(".tab_logic");
-        tbl2.style.display="none";
-            
-        $(document).on('submit','#form_post',function(e){
-            e.preventDefault();
-            $.ajax({                      
-                type: "POST",
-                url: "",
-                data: {
-                    
-                    fd :$('#fdate').val(),
-                    ld :$('#ldate').val(),    
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
-                },
-        
-                success:function(response){
-                    console.log(response)
-                    data = response.ct
-                    data2 = response.invoiced
-                    data3 = response.re
-                    data4 =response.sum
-                    data5 = response.df
-                    data6 = response.dl
-                    data7 = response.invitem
-                    
-                    for (i=0;i<data7.length;i++){
-                        $('#tab_logic tbody').append(
-                            `
-                                <tr>
-                                    <td>${data7[i].invoicedate }</td>
-                                    <td>Invoice</td>
-                                    <td> ${data7[i].invoiceno} - due on ${data7[i].duedate}</td>
-                                    <td>${data7[i].grandtotal}</td>
-                                    <td></td>
-                                    <td> ${data7[i].baldue}</td>
-                                 </tr>
-                            `
-                        )
-                    }
-
-                    for (i=0;i<data.length;i++){
-                        $('#tab_logic tbody').append(
-                            `
-                               <tr>
-                                    <td>${data[i].paymdate}</td>
-                                    <td>Payment Received</td>
-                                    <td>₹ ${data[i].amtapply} for payment </td>
-                                    <td></td>
-                                    <td>${data[i].amtapply}</td>
-                                    <td> ${data[i].balance}</td>
-                                </tr>
-                            `       
-                        )
-                    }
-                    $('#tab_logic tbody').append( `<tr>
-                        <td colspan="5">Balance Due</td>
-                        <td>${data4} </td>
-                        </tr>`)
-                        tbl1.style.display="none";
-                        tbl2.style.display="block";
-                    document.getElementById('invamount').value = data2
-                    document.getElementById('received').value = data3
-                    document.getElementById('due').value = data4 
-                    document.getElementById('df').value = data5 
-                    document.getElementById('dl').value = data6  
-                }
-              
-            });
-        });
-    </script>
     
-    <script>
-        $(document).ready(function($) {
-            $(".table-row").dblclick(function() {
-                window.document.location = $(this).data("href");
-            });
-        });
-    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+    integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+    integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+    crossorigin="anonymous"></script>
 {% endblock %}

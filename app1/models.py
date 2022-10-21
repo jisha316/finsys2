@@ -1251,7 +1251,9 @@ class purchasepayment(models.Model):
     paymentdate = models.DateField(null=True)
     paymentmethod = models.CharField(max_length=100,null=True)
     depositeto = models.CharField(max_length=100)
+    amtreceived = models.CharField(max_length=100,null=True)
     paymentamount = models.CharField(max_length=100,null=True)
+    amtcredit = models.CharField(max_length=100, default='0')
 
 class purchasepayment1(models.Model):
     pymnt = models.ForeignKey(purchasepayment, on_delete=models.CASCADE,null=True)
@@ -1263,3 +1265,16 @@ class purchasepayment1(models.Model):
     
 class paymentmethod(models.Model):
     newmethod = models.CharField(max_length=100)  
+
+class vendor_statment(models.Model):
+    vendor = models.CharField(max_length=255, default='')
+    cid = models.ForeignKey(company, on_delete=models.CASCADE)
+    pbill = models.ForeignKey(purchasebill,on_delete=models.CASCADE,blank=True,null=True)
+    paymnt=models.ForeignKey(purchasepayment,on_delete=models.CASCADE,blank=True,null=True)
+    date = models.DateField()
+    transactions = models.CharField(max_length=255,blank=True,null=True)
+    details	= models.CharField(max_length=255,blank=True,null=True)
+    details2= models.CharField(max_length=255,blank=True,null=True)
+    amount	= models.FloatField(blank=True,null=True)
+    payments=models.FloatField(default='',null=True)	
+    balance=models.FloatField(blank=True,null=True)

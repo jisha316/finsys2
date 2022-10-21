@@ -25700,6 +25700,40 @@ def vendordetails(request):
     return redirect('/')
 
 @login_required(login_url='regcomp')
+def searchdate(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        filmeth = request.POST['reportperiod']
+        if filmeth == 'Today':
+            fromdate = tod
+            todate = tod
+        elif filmeth == 'Custom':
+            fromdate = request.POST['fper']
+            todate = request.POST['tper']
+        elif filmeth == 'This month':
+            fromdate = toda.strftime("%Y-%m-01")
+            todate = toda.strftime("%Y-%m-31")
+        elif filmeth == 'This financial year':
+            if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
+                pyear = int(toda.strftime("%Y")) - 1
+                fromdate = f'{pyear}-03-01'
+                todate = f'{toda.strftime("%Y")}-03-31'
+            else:
+                pyear = int(toda.strftime("%Y")) + 1
+                fromdate = f'{toda.strftime("%Y")}-03-01'
+                todate = f'{pyear}-03-31'
+        else:
+            return redirect('searchdate')
+        return render(request,'app1/vendorprofile.html',{'cmp1':cmp1})
+    return redirect('/')
+
+@login_required(login_url='regcomp')
 def vendorprofile(request, id):
     if 'uid' in request.session:
         if request.session.has_key('uid'):
@@ -25713,42 +25747,41 @@ def vendorprofile(request, id):
         su = fn+ ' ' +ln
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
-        pbill = purchasebill.objects.filter(cid=cmp1,vendor_name=su,status='Approved',date=tod)
+        pbill = purchasebill.objects.filter(vendor_name=su,status='Approved',date=tod)
         
         pymnt = purchasepayment.objects.filter(vendor=su, paymentdate=tod)
 
-        # statment = vendor.objects.filter(customer=su,Date=tod)
-        # bal=0
-        # for i in statment:
-        #     if i.Transactions =="Invoice":
+        statment = vendor_statment.objects.filter(vendor=su,date=tod)
+        bal=0
+        for i in statment:
+            if i.transactions =="Billed":
                 
-        #         i.Balance = bal + i.Amount
-        #         if i.Balance:
-        #             bal += i.Balance
-        #     if i.Transactions =="Payment Received":
-        #         i.Balance = bal-i.Payments
-                
-
-        #     i.save() 
-        # print(bal)     
+                i.balance = bal + i.amount
+                if i.balance:
+                    bal += i.balance
+            if i.transactions =="Payment Received":
+                i.balance = bal-i.payments
+            i.save() 
+        print(bal)     
             
 
 
         billed=0
         sum=0
-        sum2=0
+        summ=0
         re=0
+
         for i in pbill:
             if i.balance_due:
                 sum+=i.balance_due
             if i.grand_total:
-                invoiced += i.grand_total  
+                billed += i.grand_total  
 
         # for i in pymnt:
-            # if i.amtcredit:
-            #     sum2+=i.amtcredit 
-            # if i.paymentamount:
-            #     re+=i.paymentamount
+        #     if i.amtcredit:
+        #         summ+=i.amtcredit 
+        #     if i.paymentamount:
+        #         re+=i.paymentamount  
 
 
         pbl = purchasebill.objects.filter(vendor_name=su,).all() 
@@ -25759,7 +25792,7 @@ def vendorprofile(request, id):
                     'cmp1': cmp1,
                     'pbill':pbill,
                     'sum':sum,
-                    'sum2':sum2,
+                    'sum2':summ,
                     'billed':billed,
                     'tod':tod,
                     're':re,
@@ -25768,10 +25801,78 @@ def vendorprofile(request, id):
                     'paymnt':paymnt,
                     'pordr':pordr,
                     'expnc':expnc,
-                    # 'statment':statment,            
+                    'statment':statment,            
                 }
         return render(request,'app1/vendorprofile.html',context)
     return redirect('vendorprofile')
+
+def search_resept1(request,id):
+    if request.method == 'POST':
+        cmp1 = company.objects.get(id=request.session["uid"])
+        
+        # se = request.POST['select']
+
+        fst =  request.POST['fd']
+        lst = request.POST['ld']
+        print(fst)
+        print(lst)
+        
+        vendr = vendor.objects.get(vendorid=id)
+        fn =vendr.firstname
+        ln = vendr.lastname
+        su = fn+ ' ' +ln
+        billed=0
+        sum=0
+        sum2=0
+        re=0
+        
+        pbl1 = purchasebill.objects.values().filter(cid=cmp1,vendor_name=su,status='Approved',date__gte=fst,date__lte=lst)
+        pbl2 =purchasebill.objects.filter(cid=cmp1,vendor_name=su,status='Approved',date__gte=fst,date__lte=lst)
+        for i in  pbl2:
+            if i.balance_due:
+                sum+=i.balance_due
+            if i.grand_total:
+                billed += i.grand_total  
+          
+        py1 = purchasepayment.objects.values().filter(vendor=su,paymentdate__gte=fst,paymentdate__lte=lst,)
+        py2 = purchasepayment.objects.filter(vendor=su,paymentdate__gte=fst,paymentdate__lte=lst,)
+        for i in py2:
+            if i.amtcredit:
+                sum2+=i.amtcredit
+            if i.paymentamount:
+                re+=i.paymentamount
+        balance_due=billed+vendr.openingbalance -re 
+        statment2 = vendor_statment.objects.all()
+        for j in statment2:
+            if j.transactions =="Bill":
+                j.details2 = "BILL-"+" "+str(j.pbl1.bill_no) +" "+ "due on" +" "+ str(j.inv.due_date)
+            if j.transactions =="Payment Received":
+                 j.details2 = "₹"+ str(j.payments) +" "+"payment"
+                      
+            j.save()          
+       
+        statment = vendor_statment.objects.filter(vendor=su)
+        bal=vendr.openingbalance
+        
+        for i in statment:
+            if i.transactions =="Bill":
+            
+                i.balance = bal + i.amount
+            
+                bal = i.balance
+            print(bal)    
+            if i.transactions =="Payment Received":
+                i.balance = bal - i.payments
+  
+            i.save() 
+        print(bal)      
+        
+        stat = vendor_statment.objects.values().filter(vendor=su,date__gte=fst,date__lte=lst,)
+        x_data = list(pbl1)
+        ct= list(py1)
+        st=list(stat)  
+        return JsonResponse({"status":" not","pblitm":x_data,"ct":ct ,"billed":billed,'re':re,'sum':sum,"df":fst,"dl":lst,"st":st,"balance_due":balance_due,})
+
 
 @login_required(login_url='regcomp')
 def goeditvendor(request, id):
@@ -26770,10 +26871,21 @@ def createpurchasepymnt(request):
                                     paymentdate = request.POST['paymentdate'],
                                     paymentmethod=request.POST['paymentmethod'],
                                     depositeto=request.POST['depto'],
-                                    paymentamount=request.POST['paymentamount'])
+                                    amtreceived=request.POST['amtreceived'],
+                                    paymentamount=request.POST['paymentamount'],
+                                    amtcredit=request.POST['amtcredit'])
             pymnt1.save()
             pymnt1.reference = int(pymnt1.reference) + pymnt1.pymntid
             pymnt1.save()
+
+            statment2=vendor_statment()
+            statment2.vendor = pymnt1.vendor
+            statment2.cid = cmp1
+            statment2.transactions = "Payment Received"
+            statment2.paymnt = pymnt1
+            statment2.date = pymnt1.paymentdate
+            statment2.payments = pymnt1.paymentamount
+            statment2.save()
 
             billdate = request.POST.getlist("billdate[]")
             billno = request.POST.getlist("billno[]")

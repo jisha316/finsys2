@@ -1,21 +1,11 @@
 {% extends 'app1/base.html' %}
 {% block body %}
     {% load static %}
-
-    <style>
-        .inp{
-            border: none;
-            color: #fff;
-            width: 210px;
-            background-color: rgba(0,0,0,.001);
-        }
-    </style>
-
     <div class="page-content">
         <div class="card radius-15">
             <div class="card-body">
                 <div class="card-title">
-                    <center><h2 class="mb-0">NEW PAYMENT</h2></center>
+                    <center><h2 class="mb-0" style="text-transform: uppercase;;">NEW PAYMENT</h2></center>
                 </div>
                 <hr/>
             </div>
@@ -27,30 +17,25 @@
                     <div id="invoice">
                         <div class="row mt-5">
                             <div class="col-md-4">
-                                <label class="scol-form-label">Vendor</label>
-                                <div class="d-flex">
-                                    <select name="vendor" id="select" class="form-control" style="width: 95%;">
-                                        <option value="NIL" disabled selected>Select Vendor</option>
-                                        {% for c in vndr %}
-                                            <option value="{{ c.firstname }} {{ c.lastname }}">{{ c.firstname }} {{ c.lastname }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <!-- <a href="{% url 'goaddcustpayment' %}">
-                                        <button type="button" class="btn btn-outline-secondary ml-1">+</button>
-                                    </a> -->
-                                </div>
+                                <label class="col-form-label">Vendor</label>
+                                <select name="vendor" id="select" class="form-control" style="width: 95%;">
+                                    <option value="NIL" disabled selected>Select Vendor</option>
+                                    {% for c in vndr %}
+                                        <option value="{{ c.firstname }} {{ c.lastname }}">{{ c.firstname }} {{ c.lastname }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="col-md-4"></div>
                             <div class="col-md-4">
                                 <label class="col-form-label">Payment Date</label>
                                 <input type="date" name="paymentdate" id="date" class="form-control">
-                            </div>
+                            </div>    
                         </div>
                         <div class="row">
                             <div class="col-md-4 mt-3">
                                 <label class="col-form-label">Payment Method</label>
                                 <div class="d-flex">
-                                    <select name="paymentmethod" id="paymeth" class="form-control">
+                                    <select name="paymentmethod" id="paymeth" class="form-control" style="width:87%">
                                         {% for p in pymt %}
                                             <option></option>
                                             <option value="Cash">Cash</option>
@@ -67,7 +52,7 @@
                                 <label class="col-form-label">Deposit to</label>
                                 <div class="d-flex">
                                     <select name="depto" id="" class="form-control" style="width: 95%;">
-                                        {% for acc in accoun %}pymt
+                                        {% for acc in accoun %}
                                             <option value="{{ acc.name }}">{{ acc.name }}</option>
                                         {% endfor %}
                                         <option value="Deferred CGST">Deferred CGST</option>
@@ -95,22 +80,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4 mt-3"></div>
-                            <div class="col-md-4 mt-3"></div>
-                            <div class="col-md-4 mt-3"></div>
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <input type="text" id="newmethod" onchange="addtemopt(this)" class="form-control"
+                                       style="display: none;">
+                            </div>
                         </div>
-                        <div class="row mt-4" >
-                            <div class="col-md-4 mt-3"></div>
-                            <div class="col-md-4 mt-3"></div>
-                            <div class="col-md-4 mt-3" >
-                                <h5>Amount Recieved</h5>
-                                <input type="text" onchange="showinnum()" id="amtrcvd" class="form-control inp" value="0.00" name="amtreceived">
+                        <div class="row">
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Amount</label>
+                                <input type="number" onchange="showinnum('amre', this)" id="amtrcvd"
+                                       class="form-control"
+                                       name="amtreceived">
                             </div>
                         </div>
                         <div class="row mt-4 mb-4">
                             <div class="col-md-8"></div>
-                            <div class="col-md-4" >
+                            <div class="col-md-4">
+                                <h5 class="text-grey">AMOUNT</h5>
+                                <h5 class="text-light" id="amre">0.00</h5>
                             </div>
                         </div>
                         <div class="row clearfix">
@@ -124,11 +115,11 @@
                                         <th class="text-center">Bill Amount</th>
                                         <th class="text-center">Amount Due</th>
                                         <th class="text-center">Payment</th>
+
                                     </tr>
                                     </thead>
                                     <tbody id='billdata'>
-
-                                    
+                                       
                                     </tbody>
                                 </table>
                             </div>
@@ -207,12 +198,31 @@
             </div>
         </div>   
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script>
-        $('#date').val(new Date().toJSON().slice(0,10));
-    </script>
+        function showinp(divId, element) {
+            if (element.value == 'Add New') {
+                document.getElementById(divId).style.display = 'block';
+            } else {
+                document.getElementById(divId).style.display = 'none';
+            }
+        }
 
+        
+
+        function addtemopt(element) {
+            var opt = document.getElementById('newmth');
+            if (element.value) {
+                opt.value = element.value;
+                opt.innerHTML = element.value;
+            } else {
+                pass
+            }
+        }
+
+
+        
+    </script>
     <script>
         $("#select").change(function () {
             const select = $(this).val();  
@@ -226,13 +236,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.billitm
-                    
+                    xt= response.ct
                     for (i=0;i<data.length;i++){
                         j=i;
-                        
                         $('#tab_logic tbody').append(
                             `
-                                <tr id='addr1' >
+                                <tr id='addr1'>
                                     <td>${i+1}</td>
                                     <td><input type="text" name="billdate[]" id="" value="${data[i].date}" class="form-control"/></td>
                                     <td><input type="text" name='billno[]' id="" value="${data[i].bill_no}" class="form-control"/></td>
@@ -246,41 +255,14 @@
                                         class="form-control total" value="0"/>
                                     </td>
                                 </tr>
-                            `   
+                            `        
                         )
-                    }
-                    
-                }
+                    }    
+                }  
             });
         });
-    </script>
-
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script>
-        function showinp(divId, element) {
-            if (element.value == 'Add New') {
-                document.getElementById(divId).style.display = 'block';
-            } else {
-                document.getElementById(divId).style.display = 'none';
-            }
-        }
-
-        function addtemopt(element) {
-            var opt = document.getElementById('newmth');
-            if (element.value) {
-                opt.value = element.value;
-                opt.innerHTML = element.value;
-            } else {
-                pass
-            }
-        }
 
         function showinnum(divId, element) {
-            var amtrcvd = document.getElementById("amtrcvd");
-            var amre = amtrcvd.value;
-            document.getElementById("amre").value= amre;
-
-
             if (element.value) {
                 document.getElementById(divId).innerHTML = element.value;
 
@@ -298,6 +280,7 @@
                     document.getElementById('payment0').value = opnbal
                 }
                 var bal = parseFloat(element.value) - parseFloat(document.getElementById('payment0').value);
+                var payment = parseFloat(document.getElementById('payment0').value)
             }else if(j==1){
 
                 var opnbal = parseFloat(document.getElementById('openbal0').value)
@@ -828,7 +811,6 @@
                 }
                 amtcred = parseFloat(element.value) - sumpaym
                 document.getElementById('amtoapply').value = sumpaym;
-                document.getElementById('amtrcvd').value = sumpaym;
                 document.getElementById('amtcredit').value = amtcred;
             } else {
                 document.getElementById(divId).innerHTML = "0.00";
@@ -928,7 +910,7 @@
 
             
                 document.getElementById('amtoapply').value = sumpaym;
-                document.getElementById('amtrcvd').value = sumpaym;
+                document.getElementById('amre').innerHTML = sumpaym;
                 
                 temp = amtrcd - sumpaym
                
@@ -936,7 +918,7 @@
             } else {
                 
                 document.getElementById('amtoapply').value = sumpaym;
-                document.getElementById('amtrcvd').value = sumpaym;
+                document.getElementById('amre').innerHTML = sumpaym;
                
                 temp = amtrcd - sumpaym
                 document.getElementById('amtcredit').value = temp ;
@@ -944,4 +926,5 @@
 
         }
     </script>
+   
 {% endblock %}

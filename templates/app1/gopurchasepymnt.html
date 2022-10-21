@@ -4,8 +4,9 @@
     {% if user.is_authenticated %}
 
         <style>
-            a:hover{
-                color: #000;
+            tr:hover{
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.1);
             }
         </style>
 
@@ -55,13 +56,13 @@
                             </thead>
                             <tbody>
                             {% for p in py %}
-                            <tr>
-                                <td title="Payment View"><a href="viewpurchasepymnt/{{ p.pymntid }}"><strong>{{ p.reference }}</strong></a></td>
-                                <td>{{ p.paymentdate |date:'d-m-Y' }}</td>
-                                <td>{{ p.vendor }}</td>
-                                <td>{{ p.paymentmethod }}</td>
-                                <td>{{ p.paymentamount }}</td>
-                            </tr> 
+                                <tr onclick="window.location='viewpurchasepymnt/{{ p.pymntid }}';">
+                                    <td><strong>{{ p.reference }}</strong></td>
+                                    <td>{{ p.paymentdate |date:'d-m-Y' }}</td>
+                                    <td>{{ p.vendor }}</td>
+                                    <td>{{ p.paymentmethod }}</td>
+                                    <td>{{ p.paymentamount }}</td>
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>
